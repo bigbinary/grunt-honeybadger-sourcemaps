@@ -1,6 +1,6 @@
 /*
  * grunt-honeybadger-sourcemaps
- * https://github.com/rbz/grunt-honeybadger-sourcemaps
+ * https://github.com/bigbinary/grunt-honeybadger-sourcemaps
  *
  * Copyright (c) 2017 arbaaz
  * Licensed under the MIT license.
