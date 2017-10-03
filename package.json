@@ -1,7 +1,7 @@
 {
   "name": "grunt-honeybadger-sourcemaps",
   "description": "Plugin for uploading sourcemaps to honeybadger",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "homepage": "https://github.com/bigbinary/grunt-honeybadger-sourcemaps",
   "author": {
     "name": "arbaaz",
