@@ -45,7 +45,7 @@ module.exports = function(grunt) {
     options.hbUrl = 'https://api.honeybadger.io/v1/source_maps';
     
     async.eachSeries(this.files, function (f, nextFileObj) { 
-      grunt.log.writeln(chalk.green('source files:'), JSON.stringify(f));
+      grunt.verbose.writeln(chalk.green('source files:'), JSON.stringify(f));
 
       var files = f.src.filter(function (filepath) {
 
@@ -76,13 +76,9 @@ module.exports = function(grunt) {
       }
 
       async.concatSeries(files, function (file, next) {
-        grunt.log.writeln(chalk.green('source files:'), file);
+        grunt.verbose.writeln(chalk.green('source files:'), file);
 
-        var fileUrl = options.urlPrefix + options.prepareUrlParam(file.replace(".map", ""));
-        var api_key = options.appId;
-        var token = options.token;
-
-        uploadToHoneyBadger(options.hbUrl, api_key, token, file, fileUrl, function (hasErr, err) {
+        uploadToHoneyBadger(options, file, function (hasErr, err) {
           if (!hasErr) {
             grunt.log.ok('Upload successful of "' + file + '"');
             process.nextTick(next);
@@ -99,46 +95,73 @@ module.exports = function(grunt) {
     }, done);
   });
 
-  var uploadToHoneyBadger = function (hbUrl, api_key, token, file, fileUrl, callback) {
-    
-    fs.stat(file, function (err, stats) {
+  var uploadToHoneyBadger = function (options, sourceMapFilePath, callback) {
+    var url = options.hbUrl;
+    var minifiedFilePath = sourceMapFilePath.replace(".map", "");
+    var minifiedFileUrl = options.urlPrefix + options.prepareUrlParam(minifiedFilePath);
+    var apiKey = options.appId;
+    var token = options.token;
+    var revision = options.revision;
+
+    fs.stat(sourceMapFilePath, function (err, sourceMapFileStat) {
       if (err) {
         callback(true, err);
         return;
       }
 
-      if (!stats.isFile()) {
+      if (!sourceMapFileStat.isFile()) {
         callback(true, 'file not found');
         return;
       }
 
-      var fileSize = stats.size;
-      var reqData = {
-        api_key: api_key,
-        source_map: rest.file(file, null, fileSize, null, null),
-        minified_url: fileUrl
-      };
-
-      rest.post(hbUrl, {
-        headers: {
-          'Honeybadger-Token': token
-        },
-        multipart: true,
-        data: reqData,
-      })
-        .on('error', function (e) {
-          grunt.fail.warn('Failed uploading (error code: ' + e.message + ')');
-          callback(true, e.message);
-        })
-        .on('complete', function (jdata, response) {
-          if (response !== null && response.statusCode === 201) {
-            grunt.log.writeln(response.statusCode);
-            callback(false);
-          } else {
-            grunt.fail.warn('Failed uploading (error message: ' + jdata.error + ')');
-            callback(true, 'Failed uploading "' + file + '" (status code: ' + response.statusCode + ')');
-          }
-        });
+      fs.stat(minifiedFilePath, function (error, minifiedFileState) {
+        if (error) {
+          callback(true, error);
+          return;
+        }
+  
+        if (!minifiedFileState.isFile()) {
+          callback(true, 'file not found');
+          return;
+        }
+        
+        var sourceMapFileSize = sourceMapFileStat.size;
+        var minifiedFileSize = minifiedFileState.size;
+        var reqData = {
+          api_key: apiKey,
+          minified_url: minifiedFileUrl,
+          minified_file: rest.file(minifiedFilePath, null, minifiedFileSize, null, null),
+          source_map: rest.file(sourceMapFilePath, null, sourceMapFileSize, null, null),
+          revision: revision,
+        };
+  
+        const requestOptions = {
+          headers: {
+            'Honeybadger-Token': token
+          },
+          multipart: true,
+          data: reqData,
+        };
+        grunt.verbose.writeln(chalk.green('requestOptions:'), requestOptions);
+        postToHoneyBadger(url, requestOptions, callback)
+      });
     });
   };
+
+  var postToHoneyBadger = function(url, requestOptions, callback) {
+    rest.post(url, requestOptions)
+      .on('error', function (e) {
+        grunt.fail.warn('Failed uploading (error code: ' + e.message + ')');
+        callback(true, e.message);
+      })
+      .on('complete', function (jdata, response) {
+        if (response !== null && response.statusCode === 201) {
+          grunt.log.writeln(response.statusCode);
+          callback(false);
+        } else {
+          grunt.fail.warn('Failed uploading (error message: ' + jdata.error + ')');
+          callback(true, 'Failed uploading "' + file + '" (status code: ' + response.statusCode + ')');
+        }
+      });
+  }
 };
