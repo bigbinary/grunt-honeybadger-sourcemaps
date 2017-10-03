@@ -80,7 +80,7 @@ module.exports = function(grunt) {
 
         uploadToHoneyBadger(options, file, function (hasErr, err) {
           if (!hasErr) {
-            grunt.log.ok('Upload successful of "' + file + '"');
+            grunt.log.ok('Upload successful of minified file and source map file"' + file + '"');
             process.nextTick(next);
           } else {
             grunt.log.warn('Upload failed of "' + file + '"');
