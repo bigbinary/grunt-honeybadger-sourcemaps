@@ -1,0 +1,41 @@
+{
+  "name": "grunt-honeybadger-sourcemaps",
+  "description": "Plugin for uploading sourcemaps to honeybadger",
+  "version": "0.1.0",
+  "homepage": "https://github.com/bigbinary/grunt-honeybadger-sourcemaps",
+  "author": {
+    "name": "arbaaz",
+    "email": "abdularbaaz@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/bigbinary/grunt-honeybadger-sourcemaps.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bigbinary/grunt-honeybadger-sourcemaps/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/bigbinary/grunt-honeybadger-sourcemaps/blob/master/LICENSE-MIT"
+    }
+  ],
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "scripts": {
+    "test": "grunt test"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.5"
+  },
+  "keywords": [
+    "honeybadger"
+  ],
+  "dependencies": {
+    "async": "^2.5.0",
+    "chalk": "^2.1.0",
+    "ramda": "^0.24.1",
+    "restler": "^3.4.0"
+  }
+}
