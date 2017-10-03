@@ -25,12 +25,14 @@ In your project's Gruntfile, add a section named `honeybadger_sourcemaps` to the
 ```js
 grunt.initConfig({
   honeybadger_sourcemaps: {
-    options: {
-      // Task-specific options go here.
-    },
-    your_target: {
-      // Target-specific file lists and/or options go here.
-    },
+    default_options: {
+      options: {
+        // Task-specific options go here.
+      },
+      your_target: {
+        // Target-specific file lists and/or options go here.
+      },
+    }
   },
 });
 ```
@@ -58,14 +60,16 @@ The URL of your minified JavaScript file in production.
 ```js
 grunt.initConfig({
   honeybadger_sourcemaps: {
-    options: {
-      appId: "xxxx",
-      token: "xxxxxxxxxxxxxx",
-      urlPrefix: "http://example.com/"
-    },
-    files: [{
-      src: ['@path/to/**/*.map']
-    }],
+    default_options:{
+      options: {
+        appId: "xxxx",
+        token: "xxxxxxxxxxxxxx",
+        urlPrefix: "http://example.com/"
+      },
+      files: [{
+        src: ['@path/to/**/*.map']
+      }],
+    }
   },
 });
 ```

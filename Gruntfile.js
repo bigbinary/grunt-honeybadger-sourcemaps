@@ -18,7 +18,7 @@ module.exports = function(grunt) {
         options: {
           token: 'xxxx',
           appId: 'xxxxx',
-          urlPrefix: 'hello/',
+          urlPrefix: 'http://example.com/',
         },
         files: [{
           src: ['test/maps/**/*.map']

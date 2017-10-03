@@ -8,7 +8,6 @@
 
 'use strict';
 var async = require('async');
-var R = require('ramda');
 
 module.exports = function(grunt) {
 
@@ -22,7 +21,10 @@ module.exports = function(grunt) {
     var options = this.options({
       appId: "",
       token: "",
-      urlPrefix: ""
+      urlPrefix: "",
+      prepareUrlParam: function(abspath) {
+        return abspath;
+      }
     });
 
     if (options.token === "") {
@@ -45,7 +47,7 @@ module.exports = function(grunt) {
     async.eachSeries(this.files, function (f, nextFileObj) { 
       grunt.log.writeln(chalk.green('source files:'), JSON.stringify(f));
 
-      var files = R.filter(function (filepath) {
+      var files = f.src.filter(function (filepath) {
 
         if (!grunt.file.isFile(filepath)) {
           return false;
@@ -62,8 +64,7 @@ module.exports = function(grunt) {
         }
 
         return true;
-
-      }, f.src)
+      });
 
       if (files.length === 0) {
 
@@ -77,7 +78,7 @@ module.exports = function(grunt) {
       async.concatSeries(files, function (file, next) {
         grunt.log.writeln(chalk.green('source files:'), file);
 
-        var fileUrl = options.urlPrefix + file.replace(".map", "");
+        var fileUrl = options.urlPrefix + options.prepareUrlParam(file.replace(".map", ""));
         var api_key = options.appId;
         var token = options.token;
 
