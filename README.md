@@ -54,6 +54,11 @@ Type: `String`
 
 The URL of your minified JavaScript file in production. 
 
+### options.prepareUrlParam
+Type: `function`
+
+A function to manipulate the file path.
+
 ### Usage Examples
 
 #### Default Options
@@ -64,7 +69,10 @@ grunt.initConfig({
       options: {
         appId: "xxxx",
         token: "xxxxxxxxxxxxxx",
-        urlPrefix: "http://example.com/"
+        urlPrefix: "http://example.com/",
+        prepareUrlParam: function(fileSrc){
+          return filesrc.replace('built/', '');
+        }
       },
       files: [{
         src: ['@path/to/**/*.map']
