@@ -2,6 +2,8 @@
 
 > Plugin for uploading sourcemaps to honeybadger
 
+See [this blog](https://blog.bigbinary.com/2018/07/16/how-to-upload-source-maps-to-honeybadger.html) for much more detailed information.
+
 ## Getting Started
 This plugin requires Grunt `~0.4.5`
 
